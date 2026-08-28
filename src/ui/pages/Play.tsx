@@ -9,6 +9,7 @@ import {
   type GameState,
 } from '../../app/game-controller';
 import { legalActions } from '../../domain/engine';
+import { tileName, tileNames } from '../../domain/tiles';
 import { evaluateTurn, type Divergence } from '../../app/coach';
 import { getRepository } from '../../app/store';
 import { getRuleset } from '../../domain/rulesets';
@@ -257,7 +258,7 @@ export default function Play() {
             {divergences.length === 0 && <p className="muted">本局没有明显偏离 AI 建议的出牌。</p>}
             {divergences.map((d, i) => (
               <p key={i} className="muted">
-                第 {d.step} 步：你打 {d.playerTile}（剩 {d.playerUkeire} 张），AI 会打 {d.aiTile}（剩 {d.aiUkeire} 张）
+                第 {d.step} 步：你打「{tileName(d.playerTile)}」（进张剩 {d.playerUkeire} 张），AI 会打「{tileName(d.aiTile)}」（进张 {d.aiUkeire} 张）
               </p>
             ))}
           </div>
@@ -283,11 +284,11 @@ export default function Play() {
           {gangActions.map((a, i) =>
             a.type === 'anGang' ? (
               <button key={i} data-testid={`btn-angang-${a.tile}`} onClick={() => humanAct(a)}>
-                暗杠 {a.tile}
+                暗杠「{tileName(a.tile)}」
               </button>
             ) : (
               <button key={i} data-testid={`btn-bugang-${a.tile}`} onClick={() => humanAct(a)}>
-                补杠 {a.tile}
+                补杠「{tileName(a.tile)}」
               </button>
             ),
           )}
@@ -305,7 +306,7 @@ export default function Play() {
               const sig = [...a.tiles].sort().join('');
               return (
                 <button key={i} data-testid={`claim-chi-${sig}`} onClick={() => humanAct(a)}>
-                  吃 {sig}
+                  吃 {tileNames(a.tiles)}
                 </button>
               );
             }

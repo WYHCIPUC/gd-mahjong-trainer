@@ -5,7 +5,7 @@ import { evalDiscards } from '../domain/ai/efficiency';
 import type { Difficulty, Decision } from '../domain/ai/types';
 import type { GameAction, PlayerView } from '../domain/game-types';
 import { getRuleset } from '../domain/rulesets';
-import type { TileId } from '../domain/tiles';
+import { tileName, type TileId } from '../domain/tiles';
 
 /** ⚠️ experimental：进张差 ≥ 2 或向听更差才提示（实现期用 AI vs AI 回放校准） */
 export const COACH_THRESHOLDS = { ukeireDiff: 2, shantenDiff: 1 };
@@ -58,7 +58,7 @@ export function evaluateTurn(
     shantenDiff >= COACH_THRESHOLDS.shantenDiff || (shantenDiff >= 0 && ukeireDiff >= COACH_THRESHOLDS.ukeireDiff);
   const hint: CoachHint | null = overThreshold
     ? {
-        text: `同难度 AI 会打 ${aiTile}：有效进张 ${ae.ukeireTiles} 张，你打 ${playerTile} 只剩 ${pe.ukeireTiles} 张`,
+        text: `同难度 AI 会打「${tileName(aiTile)}」（有效进张 ${ae.ukeireTiles} 张），你打「${tileName(playerTile)}」只剩 ${pe.ukeireTiles} 张`,
         aiTile,
         playerTile,
         ukeireDiff,

@@ -89,3 +89,13 @@ button { touch-action: manipulation; }
 .wall-info { padding: 6px 0; }
 .action-bar { display: flex; gap: 8px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
 .action-bar button { padding: 10px 14px; min-height: 44px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+
+.home-cards { display: flex; flex-direction: column; gap: 4px; }
+.home-card { text-decoration: none; color: inherit; }
+.home-icon { font-size: 28px; }
+.quiz-option {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 8px; min-width: 52px; min-height: 72px; border: 1px solid var(--line);
+  border-radius: 8px; background: #fff; font-size: 13px; cursor: pointer;
+}
+.quiz-option:disabled { opacity: 0.7; }

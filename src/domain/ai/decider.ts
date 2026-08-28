@@ -1,14 +1,14 @@
 // 加权决策器：确定性启发式，三档难度（设计决策 #7）。
 // novice = 纯效率；intermediate = 效率 - 危险度；expert = 再加番数方向倾斜。
 // 全部输出结构化 DecisionReason，渲染成人话是教学核心（[internal]，结构可迭代）。
-import { evalDiscards, scoreOf, fanExpectation, type DiscardEval } from './efficiency';
+import { evalDiscards, scoreOf, type DiscardEval } from './efficiency';
 import { tileDanger } from './defense';
 import type { Decision, DecisionReason, Difficulty } from './types';
 import type { PlayerView } from '../game-types';
 import type { Ruleset } from '../rulesets/types';
 import { legalActions, shantenOf, canWin } from '../engine';
 import type { WinContext } from '../yaku';
-import { toCounts, tileIdToIndex, type TileId } from '../tiles';
+import { tileIdToIndex, tileName, toCounts, type TileId } from '../tiles';
 
 const DANGER_WEIGHT: Record<Difficulty, number> = { novice: 0, intermediate: 0.8, expert: 0.8 };
 const FAN_WEIGHT: Record<Difficulty, number> = { novice: 0, intermediate: 0, expert: 4 };
@@ -68,24 +68,26 @@ function decideDiscard(view: PlayerView, difficulty: Difficulty, ruleset: Rulese
   const best = scored[0];
   const margin = best.score - (scored[1]?.score ?? 0);
 
+  const shantenText =
+    best.e.shantenAfter === 0 ? '已听牌' : `离听牌还差 ${best.e.shantenAfter} 步`;
   const reasons: DecisionReason[] = [
     {
       kind: 'efficiency',
-      text: `打 ${best.e.tile} 后向听 ${best.e.shantenAfter}，有效进张 ${best.e.ukeireTiles} 张`,
+      text: `打「${tileName(best.e.tile)}」${shantenText}，有效进张 ${best.e.ukeireTiles} 张`,
       data: { shanten: best.e.shantenAfter, ukeire: best.e.ukeireTiles },
     },
   ];
   if (DANGER_WEIGHT[difficulty] > 0 && best.danger > 0) {
     reasons.push({
       kind: 'danger',
-      text: `${best.e.tile} 危险度 ${best.danger}/100，已按风险折算`,
+      text: `「${tileName(best.e.tile)}」危险度 ${best.danger}/100，已按风险折算`,
       data: { danger: best.danger },
     });
   }
   if (best.fanTilt > 0) {
     reasons.push({
       kind: 'fan',
-      text: `手牌花色集中，打 ${best.e.tile} 保留混一色/清一色方向（番数期望约 ${fanExpectation(view)} 番）`,
+      text: `手牌花色集中，打「${tileName(best.e.tile)}」保留清一色/混一色方向`,
     });
   }
   return {
@@ -116,7 +118,7 @@ function decideClaim(view: PlayerView, difficulty: Difficulty, ruleset: Ruleset)
       action: gang,
       score: 500,
       confidence: 1,
-      reasons: [{ kind: 'claim', text: `明杠 ${tile} 后可再摸一张牌` }],
+      reasons: [{ kind: 'claim', text: `明杠「${tileName(tile)}」后可再摸一张牌` }],
     };
   }
 
@@ -136,7 +138,7 @@ function decideClaim(view: PlayerView, difficulty: Difficulty, ruleset: Ruleset)
         score: 100 + (curShanten - after) * 100,
         confidence: 0.8,
         reasons: [
-          { kind: 'claim', text: `${claim.type === 'peng' ? '碰' : '吃'} ${tile} 后向听从 ${curShanten} 降到 ${after}`, data: { before: curShanten, after } },
+          { kind: 'claim', text: `${claim.type === 'peng' ? '碰' : '吃'}「${tileName(tile)}」后离听牌更近一步`, data: { before: curShanten, after } },
         ],
       };
     }

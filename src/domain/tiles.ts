@@ -24,6 +24,21 @@ export const indexToTileId = (i: number): TileId => {
 
 export const ALL_INDICES = Array.from({ length: 34 }, (_, i) => i);
 
+const SUIT_CN: Partial<Record<TileSuit, string>> = { m: '万', p: '筒', s: '条' };
+const RANK_CN = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+const HONOR_CN = ['', '东风', '南风', '西风', '北风', '发财', '红中', '白板'];
+
+/** 玩家可读牌名：m1 → 一万，z1 → 东风，z7 → 白板 */
+export const tileName = (id: TileId): string => {
+  const suit = id[0] as TileSuit;
+  const rank = Number(id.slice(1));
+  if (suit === 'z') return HONOR_CN[rank] ?? id;
+  return `${RANK_CN[rank] ?? rank}${SUIT_CN[suit]}`;
+};
+
+/** 牌名列表：「三万·四万」 */
+export const tileNames = (ids: TileId[]): string => ids.map(tileName).join('·');
+
 export const toCounts = (ids: TileId[]): number[] => {
   const counts = new Array<number>(34).fill(0);
   for (const id of ids) {

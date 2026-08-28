@@ -5,6 +5,7 @@ import { COURSES } from '../../domain/quiz/courses';
 import bankJson from '../../domain/quiz/bank.json';
 import { gradeAnswer, type Grade, type QuizQuestion } from '../../domain/quiz/types';
 import { generateDiscardQuiz } from '../../domain/quiz/generator';
+import { tileName } from '../../domain/tiles';
 
 import type { Mistake } from '../../data/repository';
 import TileFace from '../components/TileFace';
@@ -59,6 +60,7 @@ function QuizCard({
         {q.options.map((o) => (
           <button
             key={o}
+            className="quiz-option"
             data-testid={`opt-${q.id}-${o}`}
             disabled={!!choice}
             onClick={() => {
@@ -66,15 +68,16 @@ function QuizCard({
               onGraded(q, o, gradeAnswer(q, o));
             }}
           >
-            {o}
+            <TileFace tile={o} size="sm" />
+            <span>{tileName(o)}</span>
           </button>
         ))}
       </div>
       {grade && (
         <div data-testid={`feedback-${q.id}-${seedSuffix}`}>
           <p className={grade === 'wrong' ? 'calc-hint' : 'muted'}>
-            {grade === 'best' ? '✓ 正确' : grade === 'acceptable' ? '△ 两者皆可' : '✗ 不推荐'} 你选了 {choice}
-            {q.best !== choice && `，参考答案 ${q.best}`}
+            {grade === 'best' ? '✓ 正确' : grade === 'acceptable' ? '△ 两者皆可' : '✗ 不推荐'}你打了「{tileName(choice!)}」
+            {q.best !== choice && `，更优的是「${tileName(q.best)}」`}
           </p>
           <p>{q.explanation}</p>
         </div>
