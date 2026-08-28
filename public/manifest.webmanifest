@@ -1,0 +1,19 @@
+{
+  "name": "广东麻将训练",
+  "short_name": "麻将训练",
+  "description": "AI 陪练、知识学习与实时计算器三合一的广东麻将水平提高工具",
+  "lang": "zh-CN",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0a7d4f",
+  "background_color": "#f6f4ee",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
