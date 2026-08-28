@@ -232,6 +232,7 @@ export function applyAction(state: GameState, action: GameAction, claimant = sta
         s.discards[from].pop();
         s.turn = claimant;
         s.lastDiscard = null;
+        s.phase = 'action';
         drawTo(s, claimant, true);
         break;
       }
@@ -327,7 +328,10 @@ export function autoStep(state: GameState, decideFor: (view: PlayerView) => Deci
     if (best) return applyAction(state, best.action, best.seat);
     return applyAction(state, { type: 'pass' });
   }
-  throw new MahjongError('WRONG_PHASE', `阶段 ${state.phase} 不可自动行走`);
+  throw new MahjongError(
+    'WRONG_PHASE',
+    `阶段 ${state.phase} 不可自动行走 lastDiscard=${JSON.stringify(state.lastDiscard)} result=${JSON.stringify(state.result)} seq=${state.snapshotSeq}`,
+  );
 }
 
 export function serializeSnapshot(state: GameState): string {
