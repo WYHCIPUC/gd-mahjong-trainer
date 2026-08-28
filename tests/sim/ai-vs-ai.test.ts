@@ -27,7 +27,8 @@ function playGame(seed: number, samples: number[], stats: { wins: number; draws:
     assertTileConservation(next);
     state = next;
   }
-  state.result.type === 'win' ? stats.wins++ : stats.draws++;
+  if (state.result.type === 'win') stats.wins++;
+  else stats.draws++;
 }
 
 describe('AI vs AI 模拟（SC-3）', () => {
@@ -37,7 +38,6 @@ describe('AI vs AI 模拟（SC-3）', () => {
     for (let g = 0; g < 100; g++) playGame(g, samples, stats);
     expect(stats.wins + stats.draws).toBe(100);
     const avg = samples.reduce((a, b) => a + b, 0) / samples.length;
-    // eslint-disable-next-line no-console
     console.log(`100 局: 胡牌 ${stats.wins} 流局 ${stats.draws}，决策 ${samples.length} 次，平均 ${avg.toFixed(2)}ms`);
   });
 
@@ -49,7 +49,6 @@ describe('AI vs AI 模拟（SC-3）', () => {
     const sorted = [...samples].sort((a, b) => a - b);
     const avg = samples.reduce((a, b) => a + b, 0) / samples.length;
     const p99 = sorted[Math.floor(sorted.length * 0.99)];
-    // eslint-disable-next-line no-console
     console.log(
       `1000 局: 胡牌 ${stats.wins} 流局 ${stats.draws}，决策 ${samples.length} 次，平均 ${avg.toFixed(2)}ms，p99 ${p99.toFixed(2)}ms`,
     );
