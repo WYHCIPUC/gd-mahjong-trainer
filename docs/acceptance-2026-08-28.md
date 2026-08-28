@@ -28,7 +28,10 @@ npm run lint && npx tsc --noEmit && npm run build
 1. **番种表核对（M2 Task 11 门禁）**：对照你的家规/公开牌例核对 `src/domain/rulesets/*.json` 三份番种表（起胡、封顶、每个番种数值与叠加互斥）。修正后同步更新 `tests/domain/score.test.ts` 期望值。番种表在设置页与学习中心均有全文展示，便于逐项核对。
 2. **真机验收（SC-4、SC-6 真机部分）**：手机浏览器打开部署 URL → 完整打一局陪练（无可感知卡顿）→ 查看复盘 → 计算器摆 13 张（< 500ms）→ 添加到主屏幕验证 PWA。
 3. **教练阈值确认**：`src/app/coach.ts` 的 `COACH_THRESHOLDS`（进张差 ≥ 2）与 AI 权重为 experimental。已运行 `npm run calibrate 8` 取得初步数据：novice 与 expert 的 182 个出牌分歧点上，进张差 p50=-2 / p75=0 / max=0——说明 expert 在分歧点上是**刻意用进张换安全**（防守权重），「同难度 AI 对比、损失 ≥2 进张才提示」的语义与此一致，阈值暂维持 2；建议后续用更大样本（`npx tsx scripts/calibrate.ts 200`）复核。
-4. **部署**：推送 GitHub 后在仓库设置启用 Pages（CI 已含 deploy job）；本地预览 `npm run build && npm run preview`。
+4. **部署**：✅ 已上线（2026-08-28）
+   - 仓库：https://github.com/WYHCIPUC/gd-mahjong-trainer
+   - 线上地址：**https://wyhcipuc.github.io/gd-mahjong-trainer/**（手机打开即用，浏览器菜单「添加到主屏幕」可类原生运行）
+   - CI：lint / 132 单测 / E2E / Pages 部署全自动；千局模拟为独立 job（约 1.5–2 小时，不阻塞部署）
 
 ## 已知偏差（对实施计划的偏离记录）
 
