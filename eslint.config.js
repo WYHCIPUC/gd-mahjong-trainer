@@ -49,6 +49,7 @@ export default tseslint.config(
   },
   {
     rules: {
+      'import-x/no-unresolved': ['error', { ignore: ['virtual:'] }],
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     },
   },
