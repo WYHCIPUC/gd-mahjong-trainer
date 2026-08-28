@@ -5,6 +5,7 @@ export default defineConfig({
   use: {
     viewport: { width: 390, height: 844 }, // 移动优先（NFR）
     baseURL: 'http://localhost:4173',
+    serviceWorkers: 'block', // 测试不验证离线缓存，屏蔽 SW 避免旧资源导致的抖动
   },
   webServer: {
     command: 'npm run preview',

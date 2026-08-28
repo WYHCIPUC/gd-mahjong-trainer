@@ -13,6 +13,12 @@ test('陪练：自动演示模式完整打完一局并看到结算与复盘（SC
 test('陪练：手动打两巡（出牌 + 过宣称）', async ({ page }) => {
   await completeFirstRun(page);
   await page.goto('/play?seed=7');
+
+  // 存在进行中对局时会先询问：开新局保证确定起点
+  const resumeDialog = page.getByTestId('resume-dialog');
+  if (await resumeDialog.isVisible({ timeout: 3_000 }).catch(() => false)) {
+    await page.getByTestId('resume-no').click();
+  }
   await expect(page.getByTestId('play-page')).toBeVisible();
 
   // 等待轮到玩家（手牌变为可点击的 button）再出牌
