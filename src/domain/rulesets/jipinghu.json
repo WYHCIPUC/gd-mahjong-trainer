@@ -1,0 +1,25 @@
+{
+  "id": "jipinghu",
+  "name": "鸡平胡",
+  "experimental": true,
+  "allowsChi": true,
+  "startingFan": 3,
+  "capFan": 8,
+  "forms": { "standard": true, "chiitoi": true, "kokushi": false },
+  "scoring": { "selfDraw": "three-pay", "discard": "discarder-pays" },
+  "special": { "gangKai": true, "qiangGang": true, "haiDi": true, "tianHu": true, "diHu": true },
+  "yaku": [
+    { "id": "pinghu", "name": "平胡", "fan": 1, "when": "base", "base": true },
+    { "id": "zimo", "name": "自摸", "fan": 1, "when": "zimo" },
+    { "id": "duiduihu", "name": "碰碰胡", "fan": 3, "when": "duiduihu" },
+    { "id": "hunyise", "name": "混一色", "fan": 3, "when": "hunyise", "group": "yise" },
+    { "id": "qingyise", "name": "清一色", "fan": 6, "when": "qingyise", "group": "yise" },
+    { "id": "chiitoi", "name": "七对", "fan": 6, "when": "chiitoi" },
+    { "id": "hunlaotou", "name": "混老头", "fan": 6, "when": "hunlaotou", "excludes": ["duiduihu"] },
+    { "id": "gangkai", "name": "杠上开花", "fan": 1, "when": "gangkai" },
+    { "id": "qianggang", "name": "抢杠胡", "fan": 1, "when": "qianggang" },
+    { "id": "haidi", "name": "海底捞月", "fan": 1, "when": "haidi" },
+    { "id": "tianhu", "name": "天胡", "fan": 8, "when": "tianhu" },
+    { "id": "dihu", "name": "地胡", "fan": 8, "when": "dihu" }
+  ]
+}
