@@ -5,6 +5,8 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/sim/**/*.test.ts'],
+    // 千局模拟在 CI 2 核 runner 上可能跑 40–90 分钟，单测超时必须放宽
+    testTimeout: 7_200_000,
     hookTimeout: 60_000,
   },
 });
