@@ -63,3 +63,23 @@ button.tile-face:disabled { opacity: 0.35; cursor: default; }
 .fan-warn { color: #c0392b; font-size: 12px; margin-left: 6px; }
 .calc-hint { color: #c0392b; font-size: 13px; margin: 8px 0 0; }
 .calc-error { color: #c0392b; }
+.muted { color: #888; font-size: 12px; }
+.primary { background: var(--green); color: #fff; border: none; border-radius: 6px; padding: 10px 14px; min-height: 44px; font-size: 15px; }
+button { touch-action: manipulation; }
+
+.radio-card {
+  display: flex; gap: 10px; align-items: center; background: #fff; border: 1px solid var(--line);
+  border-radius: 8px; padding: 12px; margin: 8px 0; cursor: pointer;
+}
+.radio-card input { width: 20px; height: 20px; }
+.fan-preview { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin: 10px 0; }
+.fan-preview table { width: 100%; border-collapse: collapse; }
+.fan-preview td { border-bottom: 1px solid var(--line); padding: 4px 2px; font-size: 13px; }
+
+.play-page .seat-panel { display: flex; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px dashed var(--line); flex-wrap: wrap; }
+.seat.active { color: var(--green); font-weight: 700; }
+.meld-row { display: flex; }
+.meld { display: inline-flex; margin-left: 4px; }
+.wall-info { padding: 6px 0; }
+.action-bar { display: flex; gap: 8px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+.action-bar button { padding: 10px 14px; min-height: 44px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }

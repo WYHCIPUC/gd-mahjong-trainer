@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { completeFirstRun } from './helpers';
 
 const HAND13 = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8', 'm9', 'p1', 'p2', 'z5', 'z5'];
 
 test('计算器：摆 13 张 → 听牌面板 → 已见扣减 → 清空（SC-6）', async ({ page }) => {
+  await completeFirstRun(page);
   await page.goto('/calculator');
   await expect(page.getByTestId('tile-picker')).toBeVisible();
 
@@ -26,6 +28,7 @@ test('计算器：摆 13 张 → 听牌面板 → 已见扣减 → 清空（SC-6
 });
 
 test('鸡平胡流派切换后起胡提示出现', async ({ page }) => {
+  await completeFirstRun(page);
   await page.goto('/calculator');
   await page.getByTestId('ruleset-select').selectOption('jipinghu');
   for (const t of HAND13) {
