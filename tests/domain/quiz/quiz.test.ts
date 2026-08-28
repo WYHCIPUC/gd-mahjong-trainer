@@ -19,10 +19,10 @@ describe('题库 schema', () => {
 });
 
 describe('gradeAnswer 判分（容差规则）', () => {
-  const q = bank[0]; // best p1, acceptable [p2]
-  it('选 best 判对', () => expect(gradeAnswer(q, 'p1')).toBe('best'));
-  it('选 acceptable 判「两者皆可」', () => expect(gradeAnswer(q, 'p2')).toBe('acceptable'));
-  it('其他选项判错', () => expect(gradeAnswer(q, 'm1')).toBe('wrong'));
+  const q = bank.find((x) => x.id === 'q012')!; // best m8, acceptable [m7, p5]
+  it('选 best 判对', () => expect(gradeAnswer(q, 'm8')).toBe('best'));
+  it('选 acceptable 判「两者皆可」', () => expect(gradeAnswer(q, 'm7')).toBe('acceptable'));
+  it('其他选项判错', () => expect(gradeAnswer(q, 'p1')).toBe('wrong'));
 });
 
 describe('随机练习生成器', () => {
