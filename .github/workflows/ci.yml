@@ -19,7 +19,14 @@ jobs:
       - name: 安装 Playwright 浏览器
         run: npx playwright install --with-deps chromium
       - name: E2E
-        run: npm run e2e
+        run: npm run e2e 2>&1 | tee /tmp/e2e.log; exit ${PIPESTATUS[0]}
+      - name: E2E 失败摘要
+        if: failure()
+        run: |
+          echo '## E2E 输出（末 60 行）' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -n 60 /tmp/e2e.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
   # 千局模拟独立跑（约 1.5–2 小时），不阻塞 Pages 部署
   sim:
@@ -29,8 +36,16 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: npm }
       - run: npm ci
-      - run: npm run test:sim
+      - name: AI vs AI 千局模拟
+        run: npm run test:sim 2>&1 | tee /tmp/sim.log; exit ${PIPESTATUS[0]}
         timeout-minutes: 180
+      - name: 模拟失败摘要
+        if: failure()
+        run: |
+          echo '## 模拟输出（末 40 行）' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -n 40 /tmp/sim.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
   deploy:
     needs: test
