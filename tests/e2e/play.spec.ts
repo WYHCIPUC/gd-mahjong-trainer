@@ -15,8 +15,9 @@ test('陪练：手动打两巡（出牌 + 过宣称）', async ({ page }) => {
   await page.goto('/play?seed=7');
   await expect(page.getByTestId('play-page')).toBeVisible();
 
-  // 庄家（人类）出第一张手牌
-  await page.getByTestId('hand-tray').locator('.tile-face').first().click();
-  // 之后进入他人回合/宣称窗口：手牌不可点或出现宣称条，页面不崩溃
+  // 等待轮到玩家（手牌变为可点击的 button）再出牌
+  const myTile = page.getByTestId('hand-tray').locator('button.tile-face').first();
+  await myTile.waitFor({ state: 'visible', timeout: 15_000 });
+  await myTile.click();
   await expect(page.getByTestId('play-page')).toBeVisible();
 });
