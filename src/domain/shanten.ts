@@ -6,6 +6,12 @@
 export function shantenStandard(hand: number[], meldedSets = 0): number {
   const need = 4 - meldedSets;
   if (need < 0) throw new Error('碰杠组数超过 4');
+  // 防御性校验（设计文档·错误处理）：非法向量显式抛错，绝不静默给出错误答案
+  for (const c of hand) {
+    if (!Number.isInteger(c) || c < 0 || c > 4) {
+      throw new Error(`手牌向量非法（应为 0-4 的整数）: ${JSON.stringify(hand)} melded=${meldedSets}`);
+    }
+  }
   const counts = hand.slice();
   let best = need * 2 + 1; // 根节点 leaf 会立即落为真实上界
   const leaf = (m: number, p: number, pair: boolean) => {
@@ -13,6 +19,7 @@ export function shantenStandard(hand: number[], meldedSets = 0): number {
     if (s < best) best = s;
   };
 
+  // 递归深度有界：每层要么 i 前进，要么消耗至少一张牌
   const scan = (i: number, m: number, p: number, pair: boolean): void => {
     leaf(m, p, pair);
     while (i < 34 && counts[i] === 0) i++;

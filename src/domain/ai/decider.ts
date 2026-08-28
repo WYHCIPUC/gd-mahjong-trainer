@@ -124,8 +124,11 @@ function decideClaim(view: PlayerView, difficulty: Difficulty, ruleset: Ruleset)
   const chi = actions.find((a) => a.type === 'chi');
   const claim = peng ?? chi;
   if (claim) {
-    const cost = claim.type === 'peng' ? 2 : 2; // 吃碰都从手中出 2 张搭子，第 3 张是弃牌
-    hand[t] -= cost;
+    if (claim.type === 'peng') {
+      hand[t] -= 2; // 手中的对子进副露
+    } else if (claim.type === 'chi') {
+      for (const x of claim.tiles) hand[tileIdToIndex(x)]--; // 手中的搭子两张进副露
+    }
     const after = shantenOf(hand, melds + 1, ruleset);
     if (after < curShanten) {
       return {
