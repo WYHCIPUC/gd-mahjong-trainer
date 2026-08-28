@@ -1,0 +1,15 @@
+[
+  { "name": "九莲宝灯（多面听）", "hand": "1112345678999m", "melded": 0, "standard": 0 },
+  { "name": "三顺子+两面+雀头", "hand": "123m456m789m12p55p", "melded": 0, "standard": 0 },
+  { "name": "双连顺对叠+单钓字", "hand": "334455m667788p2z", "melded": 0, "standard": 0 },
+  { "name": "双顺+坎张+雀头", "hand": "234m567m89p123s55s", "melded": 0, "standard": 0 },
+  { "name": "三顺子+四孤张（2向听）", "hand": "123m456m789m1p9p5s9s", "melded": 0, "standard": 2 },
+  { "name": "两顺子+坎张+孤张（3向听）", "hand": "123m456m18p9p1s5s9s1z", "melded": 0, "standard": 3 },
+  { "name": "纯数牌六对半（标准与七对双听牌）", "hand": "1122334455667m", "melded": 0, "standard": 0, "chiitoi": 0 },
+  { "name": "五对一顺（七对1向听）", "hand": "1122334455m678m", "melded": 0, "standard": 0, "chiitoi": 1 },
+  { "name": "三组四同张（七对惩罚）", "hand": "1111222233334m", "melded": 0, "standard": 0, "chiitoi": 6 },
+  { "name": "碰一组后的听牌", "hand": "12345678m55m", "melded": 1, "standard": 0 },
+  { "name": "碰两组后的单钓", "hand": "123m456m1m", "melded": 2, "standard": 0 },
+  { "name": "十三幺听牌", "hand": "19m19p19s1234567z", "melded": 0, "kokushi": 0 },
+  { "name": "十三幺1向听（11种+一对）", "hand": "1199m1p9p1234567z", "melded": 0, "kokushi": 1 }
+]
