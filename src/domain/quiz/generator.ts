@@ -40,7 +40,6 @@ function toShorthand(ids: TileId[]): string {
   return out;
 }
 
-const SHORTHAND_SUITS = ['m', 'p', 's', 'z'];
 
 /** 出一道「打哪张」随机练习题：标准答案与可接受答案均来自同难度 AI 的效率评估 */
 export function generateDiscardQuiz(seed: number, difficulty: Difficulty = 'expert'): QuizQuestion | null {
