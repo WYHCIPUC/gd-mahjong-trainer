@@ -2,6 +2,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { configDefaults } from 'vitest/config';
 
 export default defineConfig({
   plugins: [
@@ -31,5 +32,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     include: ['tests/**/*.test.{ts,tsx}'],
+    // 千局模拟耗时较长，拆分到 `npm run test:sim`
+    exclude: [...configDefaults.exclude, 'tests/sim/**'],
   },
 });

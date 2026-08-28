@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:sim": "vitest run --config vitest.sim.config.ts",
+    "test:sim": "vitest run tests/sim",
     "e2e": "playwright test",
     "lint": "eslint .",
     "calibrate": "tsx scripts/calibrate.ts"

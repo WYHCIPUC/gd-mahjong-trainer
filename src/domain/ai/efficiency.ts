@@ -1,8 +1,7 @@
 // 进攻效率评估：对每个候选打牌给出「打出后向听 + 有效进张」。
-// 性能预算（AI 单决策 < 50ms）三项措施：
+// 性能预算（AI 单决策 < 50ms）两项措施：
 //   1. 向听结果模块级缓存（对局中局面大量重复，跨决策/跨回合复用）；
-//   2. 打出结果相同的候选（如拆对子任意一张）按等价类去重，进张只算一次；
-//   3. 只为最优向听档的前 6 个等价类计算进张（ heuristic 损失可忽略，见设计文档）。
+//   2. 打出结果相同的候选（如拆对子任意一张）按等价类去重，进张只算一次。
 import { shantenOf } from '../engine';
 import type { Ruleset } from '../rulesets/types';
 import type { PlayerView } from '../game-types';
@@ -14,7 +13,6 @@ export interface DiscardEval {
   ukeireTiles: number; // 使向听下降的摸牌总剩余张数
 }
 
-const MAX_UKEIRE_CLASSES = 6;
 const SHANTEN_CACHE_LIMIT = 300_000;
 const shantenCache = new Map<string, number>();
 
@@ -61,10 +59,7 @@ export function evalDiscards(view: PlayerView, ruleset: Ruleset): DiscardEval[] 
     else classes.set(sig, [r]);
   }
 
-  let computed = 0;
   for (const group of classes.values()) {
-    if (computed >= MAX_UKEIRE_CLASSES) break; // 超出部分 ukeire 记 0（仍保持向听排序正确）
-    computed++;
     const rep = group[0];
     const t = tileIdToIndex(rep.tile);
     hand[t]--;

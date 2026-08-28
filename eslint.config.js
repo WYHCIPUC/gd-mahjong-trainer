@@ -47,6 +47,11 @@ export default tseslint.config(
       }],
     },
   },
+  // 唯一引导点：只有 store.ts 允许组装具体存储实现，其余 UI/应用层一律经 repository 接口
+  {
+    files: ['src/app/store.ts'],
+    rules: { 'no-restricted-imports': 'off' },
+  },
   {
     rules: {
       'import-x/no-unresolved': ['error', { ignore: ['virtual:'] }],

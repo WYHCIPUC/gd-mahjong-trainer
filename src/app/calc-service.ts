@@ -23,8 +23,6 @@ export interface CalcOutput {
   startingFanHint: string | null;
 }
 
-const meldTileCount = (m: MeldRef): number => (m.type === 'peng' || m.type === 'chi' ? 3 : 4);
-
 export function calculate(input: CalcInput): CalcOutput {
   const ruleset = getRuleset(input.rulesetId);
   const handCounts = toCounts(input.hand); // 非法牌（如同牌 5 张）在此显式抛错——UI 即时校验之外的双保险
