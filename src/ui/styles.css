@@ -56,6 +56,12 @@ button.tile-face:disabled { opacity: 0.35; cursor: default; }
 .tray > span { flex: 0 0 34px; font-size: 12px; color: #666; padding-top: 14px; }
 .tray-tiles { flex: 1; display: flex; flex-wrap: wrap; min-height: 50px; border-bottom: 1px dashed var(--line); }
 .tray-empty { font-size: 12px; color: #aaa; padding-top: 16px; }
+.meld { display: inline-flex; position: relative; margin-right: 8px; }
+.meld-remove {
+  position: absolute; top: -6px; right: -8px; width: 18px; height: 18px; line-height: 16px;
+  border-radius: 50%; border: 1px solid var(--line); background: #fff; color: #c0392b;
+  font-size: 12px; padding: 0; cursor: pointer;
+}
 
 .calc-result { margin-top: 12px; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
 .wait-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; }

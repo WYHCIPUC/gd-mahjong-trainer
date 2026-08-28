@@ -52,4 +52,19 @@ describe('计算器页面', () => {
     expect(screen.getByTestId('seen-tray').textContent).toContain('记录');
     expect(screen.getByTestId('calc-result').textContent).not.toContain('合计');
   });
+
+  it('副露编辑：记碰后手牌上限变 10 张并参与计算', () => {
+    render(<Calculator rulesetId="tuidaohu" />);
+    fireEvent.click(screen.getByTestId('mode-meld'));
+    fireEvent.click(screen.getByTestId('pick-z5')); // 记碰 z5（3 张）
+    expect(screen.getByTestId('meld-tray').querySelectorAll('.tile-face').length).toBe(3);
+    fireEvent.click(screen.getByTestId('pick-z5')); // 再点同牌升杠
+    expect(screen.getByTestId('meld-tray').querySelectorAll('.tile-face').length).toBe(4);
+
+    fireEvent.click(screen.getByTestId('mode-hand'));
+    const hand10 = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'm7', 'm8', 'm9', 'p1'];
+    layHand(hand10); // 一组杠后手牌上限 10
+    expect((screen.getByTestId('pick-p2') as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByTestId('calc-result').textContent).not.toContain('摆满');
+  });
 });

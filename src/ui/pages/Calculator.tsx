@@ -7,13 +7,16 @@ import type { MeldRef } from '../../domain/agari';
 import TileFace from '../components/TileFace';
 import TilePicker from '../components/TilePicker';
 
-const HAND_LIMIT = 13;
+const FULL_HAND = 13;
 
 export default function Calculator({ rulesetId: rulesetIdProp }: { rulesetId?: string }) {
   const [rulesetId, setRulesetId] = useState(rulesetIdProp ?? 'tuidaohu');
   const [hand, setHand] = useState<TileId[]>([]);
   const [seen, setSeen] = useState<TileId[]>([]);
-  const [mode, setMode] = useState<'hand' | 'seen'>('hand');
+  const [melds, setMelds] = useState<MeldRef[]>([]);
+  const [mode, setMode] = useState<'hand' | 'seen' | 'meld'>('hand');
+
+  const handLimit = FULL_HAND - 3 * melds.length;
 
   // 无 prop 时从仓库读上次选择的流派（轻量设置经 Repository）
   useEffect(() => {
@@ -46,8 +49,20 @@ export default function Calculator({ rulesetId: rulesetIdProp }: { rulesetId?: s
   };
 
   const pick = (tile: TileId): void => {
-    if (mode === 'hand' && hand.length < HAND_LIMIT) setHand([...hand, tile]);
+    if (mode === 'hand' && hand.length < handLimit) setHand([...hand, tile]);
     if (mode === 'seen') setSeen([...seen, tile]);
+    if (mode === 'meld' && melds.length < 4) {
+      // 同牌再次点击：碰升杠；否则记碰
+      const existing = melds.find((m) => m.type === 'peng' && m.tiles[0] === tile);
+      if (existing) {
+        setMelds(melds.map((m) => (m === existing ? { type: 'mingGang', tiles: [tile, tile, tile, tile] } : m)));
+      } else {
+        setMelds([...melds, { type: 'peng', tiles: [tile, tile, tile] }]);
+      }
+    }
+  };
+  const removeMeld = (index: number): void => {
+    setMelds(melds.filter((_, i) => i !== index));
   };
   const removeAt = (list: TileId[], setList: (v: TileId[]) => void, index: number): void => {
     const next = [...list];
@@ -57,6 +72,7 @@ export default function Calculator({ rulesetId: rulesetIdProp }: { rulesetId?: s
   const clearAll = (): void => {
     setHand([]);
     setSeen([]);
+    setMelds([]);
   };
 
   const handCounts = useMemo(() => {
@@ -67,17 +83,18 @@ export default function Calculator({ rulesetId: rulesetIdProp }: { rulesetId?: s
   const seenCounts = useMemo(() => {
     const c = new Array<number>(34).fill(0);
     for (const t of seen) c[tileIdToIndex(t)]++;
+    for (const m of melds) for (const t of m.tiles) c[tileIdToIndex(t)]++;
     return c;
-  }, [seen]);
+  }, [seen, melds]);
 
   const result = useMemo(() => {
-    if (hand.length !== HAND_LIMIT) return null;
+    if (hand.length !== handLimit) return null;
     try {
-      return calculate({ hand, melded: [] as MeldRef[], seen, rulesetId });
+      return calculate({ hand, melded: melds, seen, rulesetId });
     } catch (e) {
       return { error: e instanceof Error ? e.message : '计算失败' };
     }
-  }, [hand, seen, rulesetId]);
+  }, [hand, seen, melds, rulesetId, handLimit]);
 
   return (
     <div className="page">
@@ -100,7 +117,15 @@ export default function Calculator({ rulesetId: rulesetIdProp }: { rulesetId?: s
           onClick={() => setMode('hand')}
           data-testid="mode-hand"
         >
-          摆手牌 {hand.length}/{HAND_LIMIT}
+          摆手牌 {hand.length}/{handLimit}
+        </button>
+        <button
+          type="button"
+          className={mode === 'meld' ? 'active' : ''}
+          onClick={() => setMode('meld')}
+          data-testid="mode-meld"
+        >
+          副露 {melds.length}/4
         </button>
         <button
           type="button"
@@ -114,11 +139,12 @@ export default function Calculator({ rulesetId: rulesetIdProp }: { rulesetId?: s
           清空
         </button>
       </div>
+      {mode === 'meld' && <p className="muted">点牌面记一副碰（3 张），再点同牌升级为杠；副露每多一组，手牌少摆 3 张。</p>}
 
       <TilePicker
         seenCounts={seenCounts}
         handCounts={handCounts}
-        handLimit={mode === 'hand' ? HAND_LIMIT : Number.MAX_SAFE_INTEGER}
+        handLimit={mode === 'hand' ? handLimit : Number.MAX_SAFE_INTEGER}
         handUsed={mode === 'hand' ? hand.length : 0}
         onSelect={pick}
       />
@@ -129,9 +155,26 @@ export default function Calculator({ rulesetId: rulesetIdProp }: { rulesetId?: s
           {hand.map((t, i) => (
             <TileFace key={`${t}-${i}`} tile={t} size="sm" testId={`hand-${t}`} onClick={() => removeAt(hand, setHand, i)} />
           ))}
-          {hand.length === 0 && <span className="tray-empty">点击上方牌面摆入 13 张</span>}
+          {hand.length === 0 && <span className="tray-empty">点击上方牌面摆入 {handLimit} 张</span>}
         </div>
       </div>
+      {melds.length > 0 && (
+        <div className="tray">
+          <span>副露</span>
+          <div className="tray-tiles" data-testid="meld-tray">
+            {melds.map((m, i) => (
+              <span key={i} className="meld">
+                {m.tiles.map((t, j) => (
+                  <TileFace key={j} tile={t} size="sm" />
+                ))}
+                <button className="meld-remove" data-testid={`meld-remove-${i}`} onClick={() => removeMeld(i)}>
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
       <div className="tray">
         <span>已见</span>
         <div className="tray-tiles" data-testid="seen-tray">
@@ -146,7 +189,9 @@ export default function Calculator({ rulesetId: rulesetIdProp }: { rulesetId?: s
         {result && 'error' in result && <p className="calc-error">{result.error}</p>}
         {result && !('error' in result) && (
           <>
-            {result.waits.length === 0 && <p>暂无听牌：{HAND_LIMIT - hand.length > 0 ? '请摆满 13 张' : '当前牌型未听牌'}</p>}
+            {result.waits.length === 0 && (
+              <p>暂无听牌：{handLimit - hand.length > 0 ? `请摆满 ${handLimit} 张` : '当前牌型未听牌'}</p>
+            )}
             {result.waits.map((w) => {
               const fan = result.fans.find((f) => f.tile === w.tile)?.fan;
               return (
