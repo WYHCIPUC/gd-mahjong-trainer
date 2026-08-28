@@ -67,6 +67,8 @@ jobs:
         env:
           PAGES_BASE: /${{ github.event.repository.name }}/
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true # 首次运行自动启用 Pages
       - uses: actions/upload-pages-artifact@v3
         with: { path: dist }
       - id: deployment
