@@ -34,7 +34,7 @@ function SeatPanel({ state, seat }: { state: GameState; seat: number }) {
         {seat === state.dealer ? '(庄)' : ''} 家
       </span>
       <span className="muted">
-        弃牌 {state.discards[seat].length} · 副露 {state.melds[seat].length}
+        副露 {state.melds[seat].length}
       </span>
       <div className="meld-row">
         {state.melds[seat].map((m, i) => (
@@ -43,6 +43,11 @@ function SeatPanel({ state, seat }: { state: GameState; seat: number }) {
               <TileFace key={j} tile={t} size="sm" />
             ))}
           </span>
+        ))}
+      </div>
+      <div className="discard-pool" data-testid={`discard-pool-${seat}`}>
+        {state.discards[seat].map((t, i) => (
+          <TileFace key={`${t}-${i}`} tile={t} size="sm" />
         ))}
       </div>
     </div>
@@ -239,7 +244,7 @@ export default function Play() {
         </div>
       </div>
       <div className="muted wall-info">
-        牌墙余 {session.state.wall.length} 张 · 第 {session.state.discardCount} 巡
+        东风局 · 牌墙余 {session.state.wall.length} 张 · 第 {session.state.discardCount} 巡
       </div>
 
       {result && (

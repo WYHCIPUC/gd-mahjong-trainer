@@ -1,16 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { completeFirstRun } from './helpers';
+import { completeFirstRun, openPlay } from './helpers';
 
 test('对局中刷新 → 提示恢复 → 从快照继续（SC-7）', async ({ page }) => {
   await completeFirstRun(page);
-  await page.goto('/play?seed=7');
-
-  // 可能出现恢复对话框（存在进行中对局时），开新局保证测试从确定起点开始
-  const resumeDialog = page.getByTestId('resume-dialog');
-  if (await resumeDialog.isVisible({ timeout: 3_000 }).catch(() => false)) {
-    await page.getByTestId('resume-no').click();
-  }
-  await expect(page.getByTestId('play-page')).toBeVisible();
+  await openPlay(page, '?seed=7');
 
   // 庄家打一张牌，推进到宣称窗口（等待轮到玩家：手牌可点击）
   const myTile = page.getByTestId('hand-tray').locator('button.tile-face').first();

@@ -1,13 +1,13 @@
 import { test, expect } from '@playwright/test';
-import { completeFirstRun } from './helpers';
+import { completeFirstRun, expectAppReady } from './helpers';
 import fs from 'node:fs';
 
 test('首启选择持久化；设置页换流派与难度；导出→清→导入一致（SC-5、SC-9）', async ({ page }) => {
   await completeFirstRun(page, 'first-run-radio-jipinghu');
 
-  // 首启选择持久化：刷新后不再出现引导
+  // 首启选择持久化：刷新后不再出现引导（先等 App 完成设置判定）
   await page.reload();
-  await expect(page.getByTestId('first-run')).toHaveCount(0);
+  await expectAppReady(page);
 
   // 设置页换流派与难度
   await page.goto('/settings');
@@ -40,7 +40,7 @@ test('首启选择持久化；设置页换流派与难度；导出→清→导�
 
   await page.waitForURL(/\/settings/);
   await page.reload();
-  await expect(page.getByTestId('first-run')).toHaveCount(0);
+  await expectAppReady(page);
   await page.goto('/settings');
   await expect(page.getByTestId('settings-ruleset')).toHaveValue('gangshi');
   await expect(page.getByTestId('settings-difficulty')).toHaveValue('expert');
