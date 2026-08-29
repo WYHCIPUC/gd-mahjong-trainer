@@ -61,6 +61,11 @@ export default function Play() {
   const [hint, setHint] = useState<string | null>(null);
   const [divergences, setDivergences] = useState<Divergence[]>([]);
   const [resumeCandidate, setResumeCandidate] = useState<string | null>(null);
+  useEffect(() => {
+    if (!hint) return;
+    const timer = setTimeout(() => setHint(null), 8000);
+    return () => clearTimeout(timer);
+  }, [hint]);
   const [error, setError] = useState<string | null>(null);
   const startedRef = useRef(false);
 
@@ -243,31 +248,75 @@ export default function Play() {
           ))}
         </div>
       </div>
-      <div className="muted wall-info">
-        东风局 · 牌墙余 {session.state.wall.length} 张 · 第 {session.state.discardCount} 巡
+      <div className="wall-bar">
+        <span className="wall-round">东风局</span>
+        <div className="wall-progress">
+          <div className="wall-progress-fill" style={{ width: `${(session.state.wall.length / 136) * 100}%` }} />
+        </div>
+        <span className="muted">
+          余 {session.state.wall.length} 张 · 第 {session.state.discardCount} 巡
+        </span>
       </div>
 
       {result && (
-        <div className="calc-result" data-testid="result-panel">
-          <h3>{result.type === 'draw' ? '流局' : `${result.winner === HUMAN_SEAT ? '你胡了！' : `${result.winner} 家胡`}`}</h3>
-          {result.fan && (
-            <p>
-              {result.fan.total} 番：{result.fan.matched.map((m) => m.name).join('、')}
-            </p>
+        <div className="calc-result result-panel" data-testid="result-panel">
+          {result.type === 'draw' ? (
+            <h3 className="result-title">流局 · 荒庄</h3>
+          ) : (
+            <>
+              <h3 className="result-title win">
+                {result.selfDraw ? '自摸胡' : '荣胡'} ·{' '}
+                {result.winner === HUMAN_SEAT ? '你' : `${['东', '南', '西', '北'][result.winner ?? 0]}家`}
+                {' '}· {result.fan?.total ?? 0} 番
+              </h3>
+              {result.fan && (
+                <div className="fan-chips">
+                  {result.fan.matched.map((m) => (
+                    <span key={m.yakuId} className="fan-chip">
+                      {m.name} {m.fan}番
+                    </span>
+                  ))}
+                  <span className="fan-chip total">合计 {result.fan.total} 番</span>
+                </div>
+              )}
+              <p className="muted">
+                胡牌张：「{tileName(result.winTile ?? '')}」· {result.selfDraw ? '自摸' : '对手点炮'}
+              </p>
+            </>
           )}
-          <p data-testid="score-deltas">
-            得分变动：{result.deltas.map((d, i) => `${['你', '东家', '南家', '西家'][i]} ${d > 0 ? '+' : ''}${d}`).join('，')}
-          </p>
-          <div data-testid="divergence-list">
+          <table className="score-table" data-testid="score-deltas">
+            <thead>
+              <tr>
+                <th>玩家</th>
+                <th>得分变动</th>
+              </tr>
+            </thead>
+            <tbody>
+              {result.deltas.map((d, i) => (
+                <tr key={i} className={i === HUMAN_SEAT ? 'self-row' : ''}>
+                  <td>
+                    {i === HUMAN_SEAT ? '你' : `${['东', '南', '西', '北'][i]}家`}
+                    {i === session.state.dealer ? ' (庄)' : ''}
+                  </td>
+                  <td className={d > 0 ? 'pos' : d < 0 ? 'neg' : ''}>
+                    {d > 0 ? '+' : ''}
+                    {d}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div data-testid="divergence-list" className="divergence-list">
             <b>关键分歧点（{divergences.length}）</b>
             {divergences.length === 0 && <p className="muted">本局没有明显偏离 AI 建议的出牌。</p>}
             {divergences.map((d, i) => (
-              <p key={i} className="muted">
-                第 {d.step} 步：你打「{tileName(d.playerTile)}」（进张剩 {d.playerUkeire} 张），AI 会打「{tileName(d.aiTile)}」（进张 {d.aiUkeire} 张）
-              </p>
+              <div key={i} className="divergence-item">
+                第 {d.step} 步：你打「{tileName(d.playerTile)}」（进张剩 {d.playerUkeire} 张）
+                ，AI 会打「{tileName(d.aiTile)}」（进张 {d.aiUkeire} 张）
+              </div>
             ))}
           </div>
-          <button data-testid="new-game" onClick={() => window.location.assign('/play')}>
+          <button className="primary" data-testid="new-game" onClick={() => window.location.assign('/play')}>
             再来一局
           </button>
         </div>
@@ -326,14 +375,19 @@ export default function Play() {
       <div className="tray">
         <span>手牌</span>
         <div className="tray-tiles" data-testid="hand-tray">
-          {view.hand.map((t, i) => (
-            <TileFace
-              key={`${t}-${i}`}
-              tile={t}
-              testId={`hand-${t}`}
-              onClick={myTurn ? () => humanAct({ type: 'discard', tile: t }) : undefined}
-            />
-          ))}
+          {view.hand.map((t, i) => {
+            const isDrawn =
+              myTurn && !!session.state.drawnTile && t === session.state.drawnTile && i === view.hand.length - 1;
+            return (
+              <TileFace
+                key={`${t}-${i}`}
+                tile={t}
+                highlight={isDrawn}
+                testId={`hand-${t}`}
+                onClick={myTurn ? () => humanAct({ type: 'discard', tile: t }) : undefined}
+              />
+            );
+          })}
         </div>
       </div>
       {autoMode && !result && <p className="muted">自动演示模式：AI 代打所有座位</p>}

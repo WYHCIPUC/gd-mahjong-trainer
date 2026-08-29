@@ -134,3 +134,35 @@ button { touch-action: manipulation; }
   border-radius: 8px; background: #fff; font-size: 13px; cursor: pointer;
 }
 .quiz-option:disabled { opacity: 0.7; }
+
+/* 结算面板 */
+.result-panel { animation: slide-up 0.3s ease; }
+@keyframes slide-up { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+.result-title { margin: 4px 0 8px; font-size: 19px; }
+.result-title.win { color: #b03a2e; }
+.fan-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.fan-chip {
+  background: #f7f2e4; border: 1px solid #d8cba6; color: #6b5618;
+  border-radius: 12px; padding: 2px 10px; font-size: 12px;
+}
+.fan-chip.total { background: var(--green); border-color: var(--green); color: #fff; font-weight: 700; }
+.score-table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+.score-table th, .score-table td { border-bottom: 1px solid var(--line); padding: 5px 4px; text-align: left; font-size: 13px; }
+.score-table th { color: #888; font-weight: 500; }
+.score-table .self-row { background: #f2f8f4; }
+.score-table .pos { color: #147a4d; font-weight: 700; }
+.score-table .neg { color: #c0392b; }
+.divergence-list { margin: 10px 0; }
+.divergence-item { background: #faf7ee; border-left: 3px solid #d8b558; padding: 6px 8px; margin: 6px 0; font-size: 12px; color: #666; border-radius: 0 6px 6px 0; }
+
+/* 牌墙进度条 */
+.wall-bar { display: flex; align-items: center; gap: 8px; padding: 8px 4px; }
+.wall-round { color: #ffd97a; font-weight: 700; font-size: 13px; letter-spacing: 2px; }
+.wall-progress { flex: 1; height: 6px; background: rgba(0, 0, 0, 0.35); border-radius: 3px; overflow: hidden; }
+.wall-progress-fill { height: 100%; background: linear-gradient(90deg, #ffd97a, #f0b95a); border-radius: 3px; transition: width 0.3s; }
+
+/* 摸牌高亮 */
+.tile-drawn { outline: 2.5px solid #ffd97a; outline-offset: -1px; box-shadow: 0 0 8px rgba(255, 217, 122, 0.8), inset 0 1px 0 #fff; }
+
+/* 计算器摘要 */
+.calc-summary { background: #f2f8f4; border-radius: 6px; padding: 6px 8px; font-size: 13px; color: #145238; margin: 0 0 6px; }

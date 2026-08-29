@@ -192,6 +192,12 @@ export default function Calculator({ rulesetId: rulesetIdProp }: { rulesetId?: s
             {result.waits.length === 0 && (
               <p>暂无听牌：{handLimit - hand.length > 0 ? `请摆满 ${handLimit} 张` : '当前牌型未听牌'}</p>
             )}
+            {result.waits.length > 0 && (
+              <p className="calc-summary" data-testid="calc-summary">
+                共听 {result.waits.length} 张，等牌合计剩{' '}
+                {result.waits.reduce((sum, w) => sum + w.remaining, 0)} 张
+              </p>
+            )}
             {result.waits.map((w) => {
               const fan = result.fans.find((f) => f.tile === w.tile)?.fan;
               return (

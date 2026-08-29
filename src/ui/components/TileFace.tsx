@@ -16,6 +16,7 @@ export default function TileFace({
   disabled = false,
   testId,
   badge,
+  highlight = false,
 }: {
   tile: TileId;
   size?: 'sm' | 'md';
@@ -23,10 +24,11 @@ export default function TileFace({
   disabled?: boolean;
   testId?: string;
   badge?: string | number;
+  highlight?: boolean;
 }) {
   const suit = tile[0];
   const rank = Number(tile.slice(1));
-  const cls = `tile-face tile-${size} tile-${suit}`;
+  const cls = `tile-face tile-${size} tile-${suit}${highlight ? ' tile-drawn' : ''}`;
   const isButton = !!onClick || disabled;
 
   let face;
